@@ -10,7 +10,7 @@ interface UseSparringSessionReturn {
   isThinking: boolean;
   isLoadingFeedback: boolean;
   error: string | null;
-  startSession: (caseId: string, caseTitle: string, caseType: CaseType) => Promise<void>;
+  startSession: (caseId: string, caseTitle: string, caseType: CaseType, customPrompt?: string) => Promise<void>;
   sendMessage: (text: string) => Promise<void>;
   requestHint: () => Promise<void>;
   endSession: () => Promise<void>;
@@ -41,7 +41,7 @@ export function useSparringSession(): UseSparringSessionReturn {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: apiMessages, caseId: currentSession.caseId, requestingHint }),
+          body: JSON.stringify({ messages: apiMessages, caseId: currentSession.caseId, requestingHint, customPrompt: currentSession.customPrompt }),
           signal: abortRef.current.signal,
         });
         if (!res.ok) throw new Error("API error");
@@ -81,10 +81,10 @@ export function useSparringSession(): UseSparringSessionReturn {
   );
 
   const startSession = useCallback(
-    async (caseId: string, caseTitle: string, caseType: CaseType) => {
+    async (caseId: string, caseTitle: string, caseType: CaseType, customPrompt?: string) => {
       setError(null);
       const newSession: SparringSession = {
-        id: uuidv4(), caseId, caseTitle, caseType,
+        id: uuidv4(), caseId, caseTitle, caseType, customPrompt,
         messages: [], status: "active", feedback: null,
         startedAt: Date.now(), endedAt: null,
       };
@@ -130,7 +130,7 @@ export function useSparringSession(): UseSparringSessionReturn {
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript, caseId: session.caseId }),
+        body: JSON.stringify({ transcript, caseId: session.caseId, customPrompt: session.customPrompt }),
       });
       const feedback: SessionFeedback = await res.json();
       const completedSession: SparringSession = { ...endedSession, status: "feedback_ready", feedback };

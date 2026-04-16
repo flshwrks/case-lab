@@ -9,7 +9,7 @@ import { FeedbackPanel } from "@/components/sparring/FeedbackPanel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Loader2, AlertCircle } from "lucide-react";
-import type { CaseDoc } from "@/types";
+import type { CaseDoc, CaseType } from "@/types";
 import { CASE_TYPE_LABELS } from "@/data/cases";
 
 export default function SparringPage() {
@@ -30,10 +30,15 @@ export default function SparringPage() {
     startSession(caseDoc.id, caseDoc.title, caseDoc.type);
   };
 
+  const handleCustom = (caseType: CaseType, customPrompt: string) => {
+    startSession(caseType, "カスタムケース", caseType, customPrompt);
+  };
+
   const handleViewModelAnswer = () => {
     if (!session) return;
     const params = new URLSearchParams();
     params.set("sessionId", session.id);
+    if (session.customPrompt) params.set("customPrompt", session.customPrompt);
     router.push(`/model-answer/${session.caseId}?${params.toString()}`);
   };
 
@@ -41,7 +46,7 @@ export default function SparringPage() {
   if (!session) {
     return (
       <div className="max-w-2xl mx-auto py-8 px-4">
-        <CaseSelector onSelect={handleCaseSelect} />
+        <CaseSelector onSelect={handleCaseSelect} onCustom={handleCustom} />
       </div>
     );
   }

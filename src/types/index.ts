@@ -46,6 +46,7 @@ export interface SparringSession {
   caseId: string;
   caseTitle: string;
   caseType: CaseType;
+  customPrompt?: string;
   messages: Message[];
   status: SessionStatus;
   feedback: SessionFeedback | null;
@@ -94,14 +95,18 @@ export interface ChatRequest {
   messages: { role: "user" | "assistant"; content: string }[];
   caseId: string;
   requestingHint: boolean;
+  customPrompt?: string;
 }
 
 export interface FeedbackRequest {
   transcript: { role: string; content: string }[];
   caseId: string;
+  customPrompt?: string;
 }
 
 export interface ModelAnswerRequest {
   caseId: string;
   userTranscript?: { role: string; content: string }[];
+  customPrompt?: string;
+  customCaseType?: string;
 }

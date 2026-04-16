@@ -23,6 +23,7 @@ export default function ModelAnswerPage({ params }: Props) {
   const { caseId } = use(params);
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("sessionId");
+  const customPrompt = searchParams.get("customPrompt") ?? undefined;
 
   const [previousSession, setPreviousSession] = useState<SparringSession | null>(null);
 
@@ -31,7 +32,8 @@ export default function ModelAnswerPage({ params }: Props) {
 
   // Load session (if provided) then generate — single effect, no hasLoaded gate needed
   useEffect(() => {
-    if (!caseDoc) return;
+    // For custom cases, caseDoc won't exist — that's fine, API handles it via customPrompt
+    if (!caseDoc && !customPrompt) return;
 
     if (sessionId) {
       loadSession(sessionId)
@@ -40,17 +42,17 @@ export default function ModelAnswerPage({ params }: Props) {
           const transcript = s?.messages
             .filter((m) => m.role !== "system")
             .map((m) => ({ role: m.role, content: m.content }));
-          generate({ caseId, userTranscript: transcript });
+          generate({ caseId, userTranscript: transcript, customPrompt, customCaseType: caseId });
         })
-        .catch(() => generate({ caseId }));
+        .catch(() => generate({ caseId, customPrompt, customCaseType: caseId }));
     } else {
-      generate({ caseId });
+      generate({ caseId, customPrompt, customCaseType: caseId });
     }
   // generate is stable (empty useCallback deps) — intentionally omitted to avoid re-runs
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [caseId, sessionId, caseDoc]);
+  }, [caseId, sessionId, caseDoc, customPrompt]);
 
-  if (!caseDoc) {
+  if (!caseDoc && !customPrompt) {
     return (
       <div className="max-w-2xl mx-auto py-8 px-4 text-center">
         <p className="text-muted-foreground">ケースが見つかりません。</p>
@@ -74,10 +76,12 @@ export default function ModelAnswerPage({ params }: Props) {
             ← 一覧
           </Link>
           <span className="text-muted-foreground">/</span>
-          <span className="text-sm font-medium truncate max-w-[300px]">{caseDoc.title}</span>
-          <Badge variant="outline" className="text-xs">
-            {CASE_TYPE_LABELS[caseDoc.type]}
-          </Badge>
+          <span className="text-sm font-medium truncate max-w-[300px]">{caseDoc?.title ?? "カスタムケース"}</span>
+          {caseDoc && (
+            <Badge variant="outline" className="text-xs">
+              {CASE_TYPE_LABELS[caseDoc.type]}
+            </Badge>
+          )}
         </div>
         <Button
           variant="outline"
@@ -103,7 +107,7 @@ export default function ModelAnswerPage({ params }: Props) {
             <CardTitle className="text-sm text-muted-foreground">ケース問題文</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm leading-relaxed">{caseDoc.prompt}</p>
+            <p className="text-sm leading-relaxed">{caseDoc?.prompt ?? customPrompt}</p>
           </CardContent>
         </Card>
       </div>

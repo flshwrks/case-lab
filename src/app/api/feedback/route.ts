@@ -3,15 +3,16 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import anthropic from "@/lib/anthropic";
 import { getCaseById } from "@/data/cases";
-import { buildFeedbackSystemPrompt, buildFallbackFeedback } from "@/lib/prompts";
-import type { FeedbackRequest, SessionFeedback } from "@/types";
+import { buildFeedbackSystemPrompt, buildFallbackFeedback, buildCustomCaseDoc } from "@/lib/prompts";
+import type { FeedbackRequest, SessionFeedback, CaseType } from "@/types";
 
 export async function POST(req: NextRequest) {
   try {
     const body: FeedbackRequest = await req.json();
-    const { transcript, caseId } = body;
+    const { transcript, caseId, customPrompt } = body;
 
-    const caseDoc = getCaseById(caseId);
+    const caseDoc = getCaseById(caseId)
+      ?? (customPrompt ? buildCustomCaseDoc(customPrompt, (caseId as CaseType) ?? "profitability") : null);
     if (!caseDoc) {
       return NextResponse.json({ error: "Case not found" }, { status: 404 });
     }

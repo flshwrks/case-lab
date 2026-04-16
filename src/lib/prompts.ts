@@ -1,10 +1,27 @@
-import type { CaseDoc, SessionFeedback } from "@/types";
+import type { CaseDoc, CaseType, SessionFeedback } from "@/types";
+
+// ── Custom case: build a minimal CaseDoc from user input ────────────────────
+export function buildCustomCaseDoc(customPrompt: string, caseType: CaseType): CaseDoc {
+  return {
+    id: "custom",
+    title: "カスタムケース",
+    company: "（ユーザー設定）",
+    type: caseType,
+    difficulty: "junior",
+    prompt: customPrompt,
+    background: {
+      overview: customPrompt,
+      keyFacts: [],
+    },
+  };
+}
 
 // ── Interviewer system prompt ────────────────────────────────────────────────
 export function buildInterviewerSystemPrompt(
   caseDoc: CaseDoc,
   requestingHint: boolean
 ): string {
+  const isCustom = caseDoc.id === "custom";
   const { prompt, background } = caseDoc;
   const factsText = background.keyFacts.map((f) => `- ${f}`).join("\n");
   const financialsText = background.financials
@@ -12,6 +29,10 @@ export function buildInterviewerSystemPrompt(
         .map(([k, v]) => `- ${k}: ${v}`)
         .join("\n")
     : "";
+
+  const dataInstruction = isCustom
+    ? "**重要**: これはユーザー設定のカスタムケースです。具体的な数値が必要な場合は、現実的な範囲で自分で設定し、セッション中は一貫してその数値を使用すること。"
+    : "**重要**: 上記の数値・事実のみを根拠として使用すること。自分で数値を作り出さないこと。候補者が尋ねた場合のみ上記情報を部分的に開示する。";
 
   const hintInstruction = requestingHint
     ? `
@@ -49,8 +70,7 @@ ${financialsText ? `### 財務データ\n${financialsText}` : ""}
 
 ${background.correctAnswerRange ? `### 正答の範囲（採点基準）\n${background.correctAnswerRange}` : ""}
 
-**重要**: 上記の数値・事実のみを根拠として使用すること。自分で数値を作り出さないこと。
-候補者が尋ねた場合のみ上記情報を部分的に開示する。
+${dataInstruction}
 
 ## 面接の進め方
 

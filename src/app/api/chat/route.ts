@@ -3,15 +3,16 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import anthropic from "@/lib/anthropic";
 import { getCaseById } from "@/data/cases";
-import { buildInterviewerSystemPrompt } from "@/lib/prompts";
-import type { ChatRequest } from "@/types";
+import { buildInterviewerSystemPrompt, buildCustomCaseDoc } from "@/lib/prompts";
+import type { ChatRequest, CaseType } from "@/types";
 
 export async function POST(req: NextRequest) {
   try {
     const body: ChatRequest = await req.json();
-    const { messages, caseId, requestingHint } = body;
+    const { messages, caseId, requestingHint, customPrompt } = body;
 
-    const caseDoc = getCaseById(caseId);
+    const caseDoc = getCaseById(caseId)
+      ?? (customPrompt ? buildCustomCaseDoc(customPrompt, (caseId as CaseType) ?? "profitability") : null);
     if (!caseDoc) {
       return NextResponse.json({ error: "Case not found" }, { status: 404 });
     }

@@ -52,7 +52,7 @@ export default function HistoryPage() {
             className="mt-4"
             onClick={() => router.push("/sparring")}
           >
-            壁打きを始める
+            壁打ちを始める
           </Button>
         </div>
       ) : (

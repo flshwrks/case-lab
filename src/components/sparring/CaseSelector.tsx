@@ -44,7 +44,7 @@ export function CaseSelector({ onSelect }: CaseSelectorProps) {
             <CardContent>
               <p className="text-sm text-foreground/80 mb-3 line-clamp-2">{c.prompt}</p>
               <Button size="sm" onClick={() => onSelect(c)} className="w-full">
-                このケースで壁打きを開始
+                このケースで壁打ちを開始
               </Button>
             </CardContent>
           </Card>

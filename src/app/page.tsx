@@ -14,7 +14,7 @@ export default function HomePage() {
           Case<span className="text-primary">Lab</span>
         </h1>
         <p className="text-muted-foreground text-lg max-w-xl mx-auto leading-relaxed">
-          MBB水準のAI面接官と壁打きして、
+          MBB水準のAI面接官と壁打ちして、
           <br />
           戦略コンサルのケース面接を突破する。
         </p>
@@ -30,7 +30,7 @@ export default function HomePage() {
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors mt-1" />
             </div>
-            <h2 className="text-lg font-semibold mb-2">壁打きモード</h2>
+            <h2 className="text-lg font-semibold mb-2">壁打ちモード</h2>
             <p className="text-sm text-muted-foreground leading-relaxed mb-4">
               McKinseyのシニアパートナー「Alex」がリアルな面接をシミュレート。
               弱い仮説にはpush-back、セッション後に5軸フィードバック。
@@ -56,7 +56,7 @@ export default function HomePage() {
             <h2 className="text-lg font-semibold mb-2">模範解答モード</h2>
             <p className="text-sm text-muted-foreground leading-relaxed mb-4">
               MBBシニアコンサルが実演するモデルアンサーを確認。
-              壁打き後に自分の回答と並べて比較できます。
+              壁打ち後に自分の回答と並べて比較できます。
             </p>
             <div className="flex flex-wrap gap-1.5">
               {["Issue Tree", "仮説思考", "定量分析"].map((tag) => (
@@ -77,7 +77,7 @@ export default function HomePage() {
         <div className="grid sm:grid-cols-3 gap-4">
           {[
             { step: "01", title: "ケースを選ぶ", desc: "収益性・市場規模・成長戦略から選択" },
-            { step: "02", title: "AI面接官と壁打き", desc: "懐疑的な面接官と本番さながらの対話" },
+            { step: "02", title: "AI面接官と壁打ち", desc: "懐疑的な面接官と本番さながらの対話" },
             { step: "03", title: "フィードバック＆比較", desc: "5軸スコアで弱点を把握、模範解答と比較" },
           ].map((item) => (
             <div key={item.step} className="flex gap-3">
@@ -99,7 +99,7 @@ export default function HomePage() {
           href="/sparring"
           className="inline-flex items-center justify-center h-9 gap-1.5 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/80 transition-colors"
         >
-          壁打きを始める
+          壁打ちを始める
         </Link>
         <Link
           href="/history"

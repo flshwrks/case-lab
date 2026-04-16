@@ -10,7 +10,7 @@ const geistSans = Geist({
 
 export const metadata: Metadata = {
   title: "CaseLab — ケース面接対策AI",
-  description: "戦略コンサルティングのケース面接をAIと壁打きで練習するアプリ",
+  description: "戦略コンサルティングのケース面接をAIと壁打ちで練習するアプリ",
 };
 
 export default function RootLayout({

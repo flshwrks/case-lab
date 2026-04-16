@@ -14,7 +14,7 @@ export default function ModelAnswerIndexPage() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold">模範解答モード</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          MBB水準のモデルアンサーを確認できます。壁打き後の比較にも使えます。
+          MBB水準のモデルアンサーを確認できます。壁打ち後の比較にも使えます。
         </p>
       </div>
       <div className="grid gap-4">

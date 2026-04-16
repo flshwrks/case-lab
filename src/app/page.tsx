@@ -1,65 +1,114 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { MessageSquare, BookOpen, History, ChevronRight } from "lucide-react";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="max-w-3xl mx-auto px-4 py-16 flex flex-col gap-16">
+      {/* Hero */}
+      <div className="text-center space-y-4">
+        <Badge variant="outline" className="text-xs px-3 py-1">
+          Claude Sonnet 4.6 搭載
+        </Badge>
+        <h1 className="text-4xl font-bold tracking-tight">
+          Case<span className="text-primary">Lab</span>
+        </h1>
+        <p className="text-muted-foreground text-lg max-w-xl mx-auto leading-relaxed">
+          MBB水準のAI面接官と壁打きして、
+          <br />
+          戦略コンサルのケース面接を突破する。
+        </p>
+      </div>
+
+      {/* Mode cards */}
+      <div className="grid sm:grid-cols-2 gap-4">
+        <Link href="/sparring" className="group">
+          <div className="border border-border rounded-2xl p-6 h-full hover:border-primary hover:shadow-md transition-all bg-card">
+            <div className="flex items-start justify-between mb-4">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <MessageSquare className="h-6 w-6 text-primary" />
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors mt-1" />
+            </div>
+            <h2 className="text-lg font-semibold mb-2">壁打きモード</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+              McKinseyのシニアパートナー「Alex」がリアルな面接をシミュレート。
+              弱い仮説にはpush-back、セッション後に5軸フィードバック。
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {["収益性分析", "市場規模推計", "成長戦略"].map((tag) => (
+                <Badge key={tag} variant="secondary" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </Link>
+
+        <Link href="/model-answer" className="group">
+          <div className="border border-border rounded-2xl p-6 h-full hover:border-primary hover:shadow-md transition-all bg-card">
+            <div className="flex items-start justify-between mb-4">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <BookOpen className="h-6 w-6 text-primary" />
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors mt-1" />
+            </div>
+            <h2 className="text-lg font-semibold mb-2">模範解答モード</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+              MBBシニアコンサルが実演するモデルアンサーを確認。
+              壁打き後に自分の回答と並べて比較できます。
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {["Issue Tree", "仮説思考", "定量分析"].map((tag) => (
+                <Badge key={tag} variant="secondary" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </Link>
+      </div>
+
+      {/* How to use */}
+      <div className="space-y-4">
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+          使い方
+        </h3>
+        <div className="grid sm:grid-cols-3 gap-4">
+          {[
+            { step: "01", title: "ケースを選ぶ", desc: "収益性・市場規模・成長戦略から選択" },
+            { step: "02", title: "AI面接官と壁打き", desc: "懐疑的な面接官と本番さながらの対話" },
+            { step: "03", title: "フィードバック＆比較", desc: "5軸スコアで弱点を把握、模範解答と比較" },
+          ].map((item) => (
+            <div key={item.step} className="flex gap-3">
+              <span className="text-2xl font-bold text-primary/20 leading-none">
+                {item.step}
+              </span>
+              <div>
+                <p className="text-sm font-medium">{item.title}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
+
+      {/* CTA */}
+      <div className="flex gap-3 justify-center">
+        <Link
+          href="/sparring"
+          className="inline-flex items-center justify-center h-9 gap-1.5 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/80 transition-colors"
+        >
+          壁打きを始める
+        </Link>
+        <Link
+          href="/history"
+          className="inline-flex items-center justify-center h-9 gap-1.5 px-4 rounded-lg border border-border bg-background text-sm font-medium hover:bg-muted transition-colors"
+        >
+          <History className="h-4 w-4" />
+          履歴を見る
+        </Link>
+      </div>
     </div>
   );
 }

@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CaseLab
 
-## Getting Started
+戦略コンサルのケース面接を、AI の面接官と壁打ちして練習する Web アプリ。
 
-First, run the development server:
+就職活動のケース面接対策として自分用に作った。練習相手がいないと、市場規模の推定や利益改善のケースを声に出して解く機会がほとんどない。そこで、面接官役・採点役・模範解答役を Claude に任せた。
+
+## できること
+
+- **壁打ち**: AI の面接官とチャットでケースを解く。前提の確認が甘い、数値の根拠が「肌感」だ、といった点に面接官が突っ込んでくる。終わると5つの軸（MECE・仮説思考・定量・構成・コミュニケーション）で採点する
+- **模範解答**: 同じケースの模範解答をストリーミングで生成し、自分の回答と2列で見比べる
+- **お題の選び方**: 用意した3ケース（収益性・市場規模・成長戦略）、ランダム、自分で入力したテーマから選べる
+- **履歴**: 過去の練習と採点はブラウザの IndexedDB に残る
+
+## 作りの要点
+
+- **役割ごとにプロンプトと生成設定を分けた**。面接官は temperature 0.7 で応答を揺らし、採点は 0 にして同じ回答には同じ点が付くようにした。面接官の発言は本番の面接に近づけるため一度に表示し、待ち時間の長い模範解答だけをストリーミングにしている
+- **数値はケースごとの資料に固定した**。各ケースに売上や業界の事実をまとめた資料を持たせ、面接官はそこにある数値だけを使い、聞かれた分だけ開示する。LLM が勝手に数値を作ると、練習の前提が崩れるからだ
+- **評価の観点はケースの種類で変えた**。フェルミ推定とケース面接の参考書2冊から観点を整理し、市場規模なら「前提確認 → 立式 → 数値の根拠 → 妥当性の確認」、ビジネスケースなら「顧客ニーズ → 行動フロー → 購買決定要因 → 競合 → 施策」の流れを追って突っ込むようにした（`src/lib/prompts.ts`）
+- **採点が壊れても練習は止めない**。採点結果は JSON で受け取り、解析に失敗したら既定のフィードバックに切り替える
+
+## しくみ
+
+| 役割 | 使うもの |
+|---|---|
+| 画面 | Next.js 16（App Router）、React 19、Tailwind CSS 4、shadcn/ui |
+| 面接官・採点・模範解答 | Claude API（`@anthropic-ai/sdk`、`claude-sonnet-4-6`） |
+| 履歴 | IndexedDB（`idb`） |
+
+API キーはサーバー側の Route Handler（`src/app/api/`）だけで使い、ブラウザには渡さない。
+
+## 動かし方
 
 ```bash
+npm install
+echo "ANTHROPIC_API_KEY=sk-ant-..." > .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+http://localhost:3000 を開く。ログイン機能はないので、公開環境に置く場合は認証を足すこと。
